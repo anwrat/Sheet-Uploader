@@ -2,6 +2,7 @@ import ExcelJS from 'exceljs';
 import type { Employee } from '../types/employee.type.js';
 
 export async function excelParser(path: string) {
+    // Need to add a stream here
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(path);
     const worksheet = workbook.getWorksheet(1);
@@ -18,6 +19,7 @@ export async function excelParser(path: string) {
     const headerCoords: Record<string,{row: number, col: number}>={};
     worksheet.eachRow((row, rowNumber)=>{
         row.eachCell((cell, colNumber)=>{
+            
             const cellText = cell.text.trim().toLowerCase();
             const matchedHeader = expectedHeaders.find(h=>h.toLowerCase() === cellText);
             if(matchedHeader){
@@ -25,8 +27,9 @@ export async function excelParser(path: string) {
             }
         });
     });
-    
-    const colValues: Record<string, (string | number)[]>={};
+
+    //Adding option for null type to save missing value entries
+    const colValues: Record<string, (string | number | null)[]>={};
     //Looping through the headerCoords Record
     Object.entries(headerCoords).forEach(([key,value])=>{
         colValues[key]=[];
@@ -34,10 +37,8 @@ export async function excelParser(path: string) {
             if(rowNumber>value.row){
                 const cell = row.getCell(value.col);
                 const val = cell.value;
-                if(val!==null && val!==undefined && val!==''){
-                    const isNumeric = numericFields.includes(key);
-                    colValues[key]!.push(isNumeric? Number(val): cell.text.trim());
-                }
+                const isNumeric = numericFields.includes(key);
+                colValues[key]!.push(isNumeric? Number(val): cell.text.trim());
             }
         })
     })
