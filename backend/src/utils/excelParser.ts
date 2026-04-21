@@ -11,6 +11,10 @@ export async function excelParser(path: string) {
         'average_montly_hours', 'time_spend_company', 'Work_accident',
         'left', 'promotion_last_5years', 'Department', 'salary'
     ];
+    const numericFields = [
+        'number_project', 'average_montly_hours', 'time_spend_company', 
+        'Work_accident', 'left', 'promotion_last_5years'
+    ];
     const headerCoords: Record<string,{row: number, col: number}>={};
     worksheet.eachRow((row, rowNumber)=>{
         row.eachCell((cell, colNumber)=>{
@@ -21,5 +25,21 @@ export async function excelParser(path: string) {
             }
         });
     });
-    return headerCoords;
-}
+    
+    const colValues: Record<string, (string | number)[]>={};
+    //Looping through the headerCoords Record
+    Object.entries(headerCoords).forEach(([key,value])=>{
+        colValues[key]=[];
+        worksheet.eachRow((row,rowNumber)=>{
+            if(rowNumber>value.row){
+                const cell = row.getCell(value.col);
+                const val = cell.value;
+                if(val!==null && val!==undefined && val!==''){
+                    const isNumeric = numericFields.includes(key);
+                    colValues[key]!.push(isNumeric? Number(val): cell.text.trim());
+                }
+            }
+        })
+    })
+    return colValues;
+}   
