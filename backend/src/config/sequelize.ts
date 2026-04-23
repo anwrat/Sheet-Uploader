@@ -11,5 +11,11 @@ export const sequelize = new Sequelize({
     password: process.env.POSTGRES_PASS,
     host: 'localhost',
     port: 5432,
-    // models: [Employee],
+    models: [Employee],
 })
+
+export async function initDB(){
+    sequelize.authenticate();
+    await sequelize.sync({force: true});
+    console.log('Database synced successfully');
+}

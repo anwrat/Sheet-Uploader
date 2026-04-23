@@ -1,4 +1,4 @@
-export interface Employee{
+export interface EmployeeData{
     emp_id: string | null,
     satisfaction_level: string | null,
     last_evaluation: string | null,

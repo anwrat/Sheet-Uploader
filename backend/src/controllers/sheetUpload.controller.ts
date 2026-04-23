@@ -1,6 +1,7 @@
 import type{ Request, Response, NextFunction } from "express";
 import {ExcelParser} from "../utils/excelParser.js";
 import { expectedHeadersSet, headersMap, headersDataMap } from "../common/constants.js";
+import { batchUpload } from "../utils/batch.js";
 
 export const parseFile = async(req: Request, res: Response, next: NextFunction)=>{
     try{
@@ -16,6 +17,7 @@ export const parseFile = async(req: Request, res: Response, next: NextFunction)=
         // data.forEach((val, key)=>{
         //     console.log(`Header: ${key}, Values: ${val.length}`);
         // })
+        await batchUpload(data, 1000);
         return res.status(200).json({message: 'File parsed successfully'});
     }catch(err){
         next(err);

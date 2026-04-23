@@ -1,5 +1,5 @@
 import ExcelJS from 'exceljs';
-import type { Employee } from '../types/employee.type.js'; 
+// import type { EmployeeData } from '../types/employee.type.js'; 
 
 export class ExcelParser{
     expectedHeadersSet: Set<string>;
@@ -33,7 +33,7 @@ export class ExcelParser{
     
     async extractData(path: string, headersMap: Map<string, {row: number, col: number}>){
         const workbook = new ExcelJS.stream.xlsx.WorkbookReader(path,{});
-        const employees: Employee[] = [];
+        const employees = [];
         for await (const worksheet of workbook){
             for await (const row of worksheet){
                 for(const [header, pos] of headersMap){
@@ -50,7 +50,7 @@ export class ExcelParser{
         //Look on readable streams for better way to handle this
         const totalEntries = this.headersDataMap.get('emp_id')?.length!;
         for(let i=0; i<totalEntries; i++){
-            const employee: Employee = {
+            const employee= {
                 emp_id: this.headersDataMap.get('emp_id')![i] ?? null,
                 satisfaction_level: this.headersDataMap.get('satisfaction_level')![i] ?? null,
                 last_evaluation: this.headersDataMap.get('last_evaluation')![i] ?? null,
