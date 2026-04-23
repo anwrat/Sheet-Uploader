@@ -22,7 +22,7 @@ export class Employee extends Model<InferAttributes<Employee>, InferCreationAttr
     declare time_spend_company: number;
 
     @Attribute(DataTypes.INTEGER)
-    declare Work_accident: number;
+    declare work_accident: number;
 
     @Attribute(DataTypes.INTEGER)
     declare left: number;
@@ -31,7 +31,7 @@ export class Employee extends Model<InferAttributes<Employee>, InferCreationAttr
     declare promotion_last_5years: number;
 
     @Attribute(DataTypes.STRING)
-    declare Department: string;
+    declare department: string;
 
     @Attribute(DataTypes.STRING)
     declare salary: string;
