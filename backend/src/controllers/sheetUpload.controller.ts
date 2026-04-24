@@ -9,10 +9,12 @@ export const parseFile = async(req: Request, res: Response, next: NextFunction)=
         if(!path){
             return res.status(404).json({message: 'File path not found'});
         }
+        console.time('File parsing time');
         const parser = new ExcelParser(expectedHeadersSet, headersMap, headersDataMap);
         const headersPos = await parser.headersFinder(path);
         // console.log(headersPos);
         const data = await parser.extractData(path, headersMap);
+        console.timeEnd('File parsing time');
         console.log(data.length);
         // data.forEach((val, key)=>{
         //     console.log(`Header: ${key}, Values: ${val.length}`);
