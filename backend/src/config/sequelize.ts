@@ -1,6 +1,7 @@
 import { Sequelize } from '@sequelize/core';
 import { PostgresDialect } from '@sequelize/postgres';
 import { Employee } from '../models/employee.model.js';
+import { Job } from '../models/job.model.js';
 import dotenv from 'dotenv';
 dotenv.config()
 
@@ -11,7 +12,7 @@ export const sequelize = new Sequelize({
     password: process.env.POSTGRES_PASS,
     host: 'localhost',
     port: 5432,
-    models: [Employee],
+    models: [Employee, Job],
 })
 
 export async function initDB(){
