@@ -32,6 +32,9 @@ export class ExcelParser{
     }
     
     async extractData(path: string, headersMap: Map<string, {row: number, col: number}>){
+        for (const key of this.headersDataMap.keys()) {
+            this.headersDataMap.set(key, []);
+        }
         const workbook = new ExcelJS.stream.xlsx.WorkbookReader(path,{});
         const employees = [];
         for await (const worksheet of workbook){
