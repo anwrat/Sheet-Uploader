@@ -14,22 +14,20 @@ export async function batchUpload(data: any[], batchSize: number, jobId: number)
     console.time('Batch Upload Time');
     let processedRows = 0;
     try{
-        for (const batch of batches) {
-
-            await sequelize.transaction(async(t)=>{
-            await Employee.bulkCreate(batch,{
-                transaction:t
-            });
-            });
-
-            processedRows += batch.length;
-
-            // separate update outside transaction
-            await Job.update(
-            {processedRows: processedRows},
-            {where:{id:jobId}}
-            );
+        await sequelize.transaction(async(t)=>{
+            for (const batch of batches){
+                await Employee.bulkCreate(batch,{
+                    transaction: t
+                });
+                processedRows += batch.length;
+                await Job.update({
+                    processedRows: processedRows
+                },{
+                    where: {id: jobId},
+                    transaction: null,
+                });
             }
+        });
         await Job.update({
             status: 'completed',
             processedRows: data.length

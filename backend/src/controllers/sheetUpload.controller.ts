@@ -15,7 +15,7 @@ export const parseFile = async(req: Request, res: Response, next: NextFunction)=
         const parser = new ExcelParser();
         const headersPos = await parser.headersFinder(path);
         // console.log(headersPos);
-        const data = await parser.extractData(path, headersPos);
+        const data = await parser.extractData(path);
         console.timeEnd('File parsing time');
         console.log(data.length);
         console.log("Creating upload job for ", req.file?.originalname);
