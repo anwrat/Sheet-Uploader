@@ -1,6 +1,5 @@
 import type{ Request, Response, NextFunction } from "express";
 import {ExcelParser} from "../utils/excelParser.js";
-import { expectedHeadersSet, headersMap, headersDataMap } from "../common/constants.js";
 import { batchUpload } from "../utils/batch.js";
 import { createUploadJob, getUploadJobs} from "../utils/jobs.js";
 import { dropEmployeeIndexes } from "../utils/dropAllIndexes.js";
@@ -13,12 +12,13 @@ export const parseFile = async(req: Request, res: Response, next: NextFunction)=
         }
         console.log('Filename: ', req.file?.originalname);
         console.time('File parsing time');
-        const parser = new ExcelParser(expectedHeadersSet, headersMap, headersDataMap);
+        const parser = new ExcelParser();
         const headersPos = await parser.headersFinder(path);
         // console.log(headersPos);
-        const data = await parser.extractData(path, headersMap);
+        const data = await parser.extractData(path, headersPos);
         console.timeEnd('File parsing time');
         console.log(data.length);
+        console.log("Creating upload job for ", req.file?.originalname);
         const job = await createUploadJob(req.file?.originalname!, data.length);
         // data.forEach((val, key)=>{
         //     console.log(`Header: ${key}, Values: ${val.length}`);
