@@ -1,25 +1,28 @@
-function App() {
+import { useState } from "react";
+import { useUploadFileMutation, useGetUploadJobsQuery} from "./utils/api";
 
-  const uploads = [
+function App() {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadFile] = useUploadFileMutation();
+  const {data, isLoading, error} = useGetUploadJobsQuery(undefined,
     {
-      id: 1,
-      name: "employees_q1.xlsx",
-      progress: 45,
-      status: "Uploading"
-    },
-    {
-      id: 2,
-      name: "payroll_april.xlsx",
-      progress: 78,
-      status: "Processing"
-    },
-    {
-      id: 3,
-      name: "staff_master.xlsx",
-      progress: 100,
-      status: "Completed"
+      pollingInterval: 1000,
+      refetchOnMountOrArgChange: true,
+      refetchOnFocus: true,
+    });
+  const handleFileUpload = () =>{
+    if(!selectedFile) return;
+    const formData = new FormData();
+    formData.append('excel_file', selectedFile);
+    try{
+      const job = uploadFile(formData).unwrap();
+      setSelectedFile(null);
+    }catch(err){
+      console.error('File upload failed: ',err);
     }
-  ];
+  }
+
+  const uploads = data?.job || [];
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
@@ -41,10 +44,12 @@ function App() {
               type="file"
               accept=".xlsx,.xls"
               className="border rounded-lg p-2 flex-1"
+              onChange={(e)=>setSelectedFile(e.target.files?.[0] || null)}
             />
 
             <button
               className="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700"
+              onClick={handleFileUpload}
             >
               Upload
             </button>
@@ -63,38 +68,41 @@ function App() {
           </h2>
 
           <div className="space-y-5">
-            {uploads.map(file => (
-              <div
-                key={file.id}
-                className="border rounded-xl p-4"
-              >
-                <div className="flex justify-between items-center mb-3">
-                  <p className="font-medium">
-                    {file.name}
+            {uploads.map((file: any) => {
+              const progress = file.totalRows? Math.round((file.processedRows / file.totalRows) * 100): 0;
+              return(
+                <div
+                  key={file.id}
+                  className="border rounded-xl p-4"
+                >
+                  <div className="flex justify-between items-center mb-3">
+                    <p className="font-medium">
+                      {file.fileName}
+                    </p>
+
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium `}
+                    >
+                      {file.status}
+                    </span>
+                  </div>
+
+                  {/* Progress bar */}
+                  <div className="w-full bg-gray-200 rounded-full h-3">
+                    <div
+                      className="bg-green-600 h-3 rounded-full"
+                      style={{
+                        width: `${progress}%`
+                      }}
+                    />
+                  </div>
+
+                  <p className="text-sm text-gray-500 mt-2">
+                    {progress}% complete
                   </p>
-
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium `}
-                  >
-                    {file.status}
-                  </span>
                 </div>
-
-                {/* Progress bar */}
-                <div className="w-full bg-gray-200 rounded-full h-3">
-                  <div
-                    className="bg-green-600 h-3 rounded-full"
-                    style={{
-                      width: `${file.progress}%`
-                    }}
-                  />
-                </div>
-
-                <p className="text-sm text-gray-500 mt-2">
-                  {file.progress}% complete
-                </p>
-              </div>
-            ))}
+              )
+  })}
           </div>
 
         </div>

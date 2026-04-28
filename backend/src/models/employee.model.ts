@@ -3,7 +3,6 @@ import { Attribute, PrimaryKey, NotNull } from '@sequelize/core/decorators-legac
 
 export class Employee extends Model<InferAttributes<Employee>, InferCreationAttributes<Employee>> {
     @Attribute(DataTypes.STRING)
-    @PrimaryKey
     @NotNull
     declare emp_id: string;
 

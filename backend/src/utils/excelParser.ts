@@ -2,14 +2,21 @@ import ExcelJS from 'exceljs';
 // import type { EmployeeData } from '../types/employee.type.js'; 
 
 export class ExcelParser{
-    expectedHeadersSet: Set<string>;
-    headersMap: Map<string, {}>;
-    headersDataMap: Map<string, (string | null)[]>;
+    private expectedHeadersSet: Set<string>;
+    private headersMap: Map<string, {row: number, col: number}>;
+    private headersDataMap: Map<string, (string | null)[]>;
     
-    constructor(expectedHeadersSet: Set<string>, headersMap: Map<string, {row: number, col: number}>, headersDataMap: Map<string, (string | null)[]>){
-        this.expectedHeadersSet = expectedHeadersSet;
-        this.headersMap = headersMap;
-        this.headersDataMap = headersDataMap;
+    constructor(){
+        this.expectedHeadersSet = new Set<string>([
+            'Emp_id', 'satisfaction_level', 'last_evaluation', 'number_project',
+            'average_montly_hours', 'time_spend_company', 'Work_accident',
+            'left', 'promotion_last_5years', 'Department', 'salary'
+        ].map(h=>h.toLowerCase()));
+        this.headersMap = new Map<string, {row: number, col: number}>();
+        this.headersDataMap = new Map<string, (string | null)[]>();
+            this.expectedHeadersSet.forEach(header=>{
+                this.headersDataMap.set(header, []);
+            });
     }
 
     
@@ -31,12 +38,15 @@ export class ExcelParser{
         return this.headersMap;
     }
     
-    async extractData(path: string, headersMap: Map<string, {row: number, col: number}>){
+    async extractData(path: string){
+        // for (const key of this.headersDataMap.keys()) {
+        //     this.headersDataMap.set(key, []);
+        // }
         const workbook = new ExcelJS.stream.xlsx.WorkbookReader(path,{});
         const employees = [];
         for await (const worksheet of workbook){
             for await (const row of worksheet){
-                for(const [header, pos] of headersMap){
+                for(const [header, pos] of this.headersMap){
                     if(row.number <= pos.row) continue; // Skip header row and rows before it
                     const cell = row.getCell(pos.col);
                     const val = cell.value?.toString().trim() ?? null;
