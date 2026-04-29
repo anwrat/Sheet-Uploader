@@ -13,10 +13,14 @@ export const sequelize = new Sequelize({
     host: 'localhost',
     port: 5432,
     models: [Employee, Job],
+    pool:{
+        max: 20,
+        min: 2,
+    }
 })
 
 export async function initDB(){
-    sequelize.authenticate();
+    await sequelize.authenticate();
     await sequelize.sync({force: true});
     console.log('Database synced successfully');
 }
