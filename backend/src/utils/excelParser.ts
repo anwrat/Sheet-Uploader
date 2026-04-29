@@ -20,7 +20,7 @@ export class ExcelParser{
     }
 
     
-    async headersFinder(path: string){
+    async extractData(path: string){
         const workbook = new ExcelJS.stream.xlsx.WorkbookReader(path,{});
         const totalheaders = this.expectedHeadersSet.size;
         for await (const worksheet of workbook){
@@ -35,14 +35,7 @@ export class ExcelParser{
             }
             break; // For only the first worksheet 
         }
-        return this.headersMap;
-    }
-    
-    async extractData(path: string){
-        // for (const key of this.headersDataMap.keys()) {
-        //     this.headersDataMap.set(key, []);
-        // }
-        const workbook = new ExcelJS.stream.xlsx.WorkbookReader(path,{});
+        console.log("Starting file parsing");
         const employees = [];
         for await (const worksheet of workbook){
             for await (const row of worksheet){
@@ -78,4 +71,3 @@ export class ExcelParser{
         return employees;
     }
 }
-

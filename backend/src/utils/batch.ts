@@ -6,12 +6,9 @@ import {sequelize} from "../config/sequelize.js";
 
 export async function batchUpload(data: any[], batchSize: number, jobId: number){
     const batches:any[] = [];
-    console.time('Batch Separation Time');
     for(let i=0; i<data.length; i+=batchSize){
         batches.push(data.slice(i, i+batchSize));
     }
-    console.timeEnd('Batch Separation Time');
-    console.time('Batch Upload Time');
     let processedRows = 0;
     try{
         await sequelize.transaction(async(t)=>{
@@ -20,6 +17,7 @@ export async function batchUpload(data: any[], batchSize: number, jobId: number)
                     transaction: t,
                     validate: false,
                     returning: false,
+                    logging:false,
                 });
                 processedRows += batch.length;
                 await Job.update({
@@ -36,7 +34,6 @@ export async function batchUpload(data: any[], batchSize: number, jobId: number)
         },{
             where: {id: jobId}
         });
-        console.timeEnd('Batch Upload Time');
     }
     catch(err){
         await Job.update({
@@ -46,5 +43,6 @@ export async function batchUpload(data: any[], batchSize: number, jobId: number)
             where: {id: jobId}
         });
         console.error('Batch upload failed: ', err);
+        throw new Error('Batch upload failed');
     }
 }       
