@@ -32,4 +32,4 @@ export const api = createApi({
     })
 });
 
-export const {useUploadFileMutation, useGetUploadJobsQuery} = api;
+export const {useUploadFileMutation, useLazyGetUploadJobsQuery} = api;

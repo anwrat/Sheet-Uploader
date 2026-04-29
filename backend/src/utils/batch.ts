@@ -17,7 +17,9 @@ export async function batchUpload(data: any[], batchSize: number, jobId: number)
         await sequelize.transaction(async(t)=>{
             for (const batch of batches){
                 await Employee.bulkCreate(batch,{
-                    transaction: t
+                    transaction: t,
+                    validate: false,
+                    returning: false,
                 });
                 processedRows += batch.length;
                 await Job.update({
