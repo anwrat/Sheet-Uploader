@@ -36,7 +36,6 @@ import {uploadQueue} from '../queues/queues.js';
 // }
 export const parseFile = async(req: Request, res: Response, next: NextFunction)=>{
     try{
-        console.time('Check time before headers finder');
         const path = req.file?.path;
         if(!path){
             return res.status(404).json({message: 'File path not found'});

@@ -22,7 +22,7 @@ worker.on('completed', (job)=>{
 });
 
 worker.on('failed', (job, err)=>{
-    console.log(`Job completed: ${job!.id}`,err);
+    console.log(`Job failed: ${job!.id}`,err);
 });
 
 worker.on('error',(err)=>{
