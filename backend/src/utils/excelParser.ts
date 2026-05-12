@@ -21,6 +21,7 @@ export class ExcelParser{
 
     
     async extractData(path: string){
+        console.time("Total parsing time");
         const workbook = new ExcelJS.stream.xlsx.WorkbookReader(path,{});
         const totalheaders = this.expectedHeadersSet.size;
         for await (const worksheet of workbook){
@@ -68,6 +69,7 @@ export class ExcelParser{
             };
             employees.push(employee);
         }
+        console.timeEnd("Total parsing time");
         return employees;
     }
 }
