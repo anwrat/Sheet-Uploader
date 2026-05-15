@@ -37,6 +37,8 @@ function App() {
         (job:any) => job.status === "processing"
       ).length;
       if(processingCount === 0){
+        //Fetch jobs one last time to get completed jobs if missed
+        fetchJobs(null,false);
         setPolling(false);
         clearInterval(interval);
       };

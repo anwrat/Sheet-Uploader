@@ -1,20 +1,18 @@
 import {Worker} from 'bullmq';
-import {ExcelParser} from '../utils/excelParser.js';
-import {createUploadJob} from '../utils/jobs.js';
-import { batchUpload } from "../utils/batch.js";
 import {connection} from "../config/bull.config.js";
+import path from 'node:path';
+import {fileURLToPath, pathToFileURL} from 'url';
 
-const worker = new Worker('upload-queue',  async (job) =>{
-    console.log('Worker started');
-    const {path, originalName} = job.data;
-    console.time(`Processing file ${originalName}`);
-    const parser = new ExcelParser();
-    const data = await parser.extractData(path);
-    const dbJob = await createUploadJob(originalName, data.length);
-    await batchUpload(data, 1000, dbJob.id);
-    console.timeEnd(`Processing file ${originalName}`);
-},
-    {connection},
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const processorPath = pathToFileURL(path.resolve(__dirname,'..','jobs', 'uploadtodb.ts'));
+
+const worker = new Worker('upload-queue', processorPath,
+    {
+        connection, 
+        concurrency: 3,
+    },
 );
 
 worker.on('completed', (job)=>{
