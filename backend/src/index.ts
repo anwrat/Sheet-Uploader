@@ -1,13 +1,11 @@
-import dotenv from 'dotenv';
 import app from './app.js';
 import connectToDB from './config/db.js';
 import { initDB } from './config/sequelize.js';
 import "./workers/workers.js";
-dotenv.config();
+import config from './config/dotenv.config.js';
 
-const port = process.env.PORT;
-app.listen(port,()=>{
+app.listen(config.port,()=>{
     connectToDB();
     initDB();
-    console.log(`Server is running on port ${port}`);
+    console.log(`Server is running on port ${config.port}`);
 })
