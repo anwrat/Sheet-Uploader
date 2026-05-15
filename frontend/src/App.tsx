@@ -3,6 +3,7 @@ import {
   useUploadFileMutation,
   useLazyGetUploadJobsQuery
 } from "./utils/api";
+import UppyUploader from './components/organisms/UppyUploader';
 
 function App() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -88,6 +89,7 @@ function App() {
 
         </div>
 
+        <UppyUploader />
 
         <div className="bg-white rounded-2xl shadow-md p-6">
           <h2 className="text-xl font-semibold mb-5">
