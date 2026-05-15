@@ -16,6 +16,8 @@
   "dependencies": {
     "@sequelize/core": "^7.0.0-alpha.48",
     "@sequelize/postgres": "^7.0.0-alpha.48",
+    "@tus/file-store": "^2.1.0",
+    "@tus/server": "^2.4.1",
     "bullmq": "^5.76.5",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",

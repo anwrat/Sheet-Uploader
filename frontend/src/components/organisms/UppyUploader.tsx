@@ -5,12 +5,14 @@ import '@uppy/dashboard/css/style.min.css';
 import { useState } from 'react';
 import Tus from '@uppy/tus';
 
+const baseURL = import.meta.env.VITE_BACKEND_URL;
+
 export default function UppyUploader(){
     const [uppy] = useState(()=>{
         return new Uppy({
             restrictions: {maxNumberOfFiles: 5},
         }).use(Tus,{
-            endpoint:'https://tusd.tusdemo.net/files/',
+            endpoint:`${baseURL}/files/`,
         });
     });
     return(
