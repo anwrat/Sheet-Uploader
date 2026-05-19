@@ -7,11 +7,11 @@ export const api = createApi({
     baseQuery: fetchBaseQuery({baseUrl: `${baseURL}/api/sheet`}),
     endpoints: (builder)=>({
         uploadFile: builder.mutation({
-            query: (formData)=>{
+            query: (data)=>{
                 return{
-                    url: '/upload',
+                    url: '/save-to-db',
                     method: 'POST',
-                    body: formData,
+                    body: data,
                 }
             }
         }),  

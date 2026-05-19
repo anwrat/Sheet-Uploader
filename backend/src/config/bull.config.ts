@@ -1,10 +1,9 @@
 import {Redis} from 'ioredis';
-import dotenv from 'dotenv';
-dotenv.config();
+import config from '../config/dotenv.config.js';
 
 //Using Memurai for Window port of Redis
 export const connection = new Redis({
-    host: process.env.REDIS_HOST!,
-    port: Number(process.env.REDIS_PORT!),
+    host: config.redis_host,
+    port: config.redis_port,
     maxRetriesPerRequest: null,
 });

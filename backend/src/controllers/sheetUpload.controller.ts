@@ -3,7 +3,7 @@ import {ExcelParser} from "../utils/excelParser.js";
 import { batchUpload } from "../utils/batch.js";
 import { createUploadJob, getUploadJobs} from "../utils/jobs.js";
 import {uploadQueue} from '../queues/queues.js';
-import { fail } from "assert";
+import path from 'path';
 // import { dropEmployeeIndexes } from "../utils/dropAllIndexes.js";
 
 // export const parseFile = async(req: Request, res: Response, next: NextFunction)=>{
@@ -37,13 +37,19 @@ import { fail } from "assert";
 // }
 export const parseFile = async(req: Request, res: Response, next: NextFunction)=>{
     try{
-        const path = req.file?.path;
-        if(!path){
-            return res.status(404).json({message: 'File path not found'});
+        const {uploadUrl, originalName, size, mimeType} = req.body;
+        const tusId = uploadUrl.split("/").pop();
+        if (!tusId) {
+        return res.status(400).json({
+            message: "Invalid upload URL",
+        });
         }
+        const filePath = path.resolve('uploads', tusId);
         await uploadQueue.add('upload-queue',{
-            path, 
-            originalName: req.file?.originalname,
+            filePath, 
+            originalName,
+            size,
+            mimeType,
         },
         {
             removeOnComplete: true,
