@@ -1,4 +1,5 @@
 import Button from '../atoms/Button';
+import {useUploadFileMutation} from '../../utils/api';
 
 export default function UploadItem({ file }: { file: any }) {
   const progress =
@@ -9,6 +10,20 @@ export default function UploadItem({ file }: { file: any }) {
     : file.progress?.uploadStarted
     ? "uploading"
     : "queued";
+  
+  const [uploadFile, {isLoading}] = useUploadFileMutation();
+  const handleFileUpload = async() =>{
+    try{
+      await uploadFile({
+        uploadUrl: file.uploadURL,
+        originalName: file.name,
+        size: file.size,
+        mimeType: file.type,
+      });
+    }catch(err){
+      console.error(err);
+    }
+  } 
 
   return (
     <div className="border rounded-xl p-4 space-y-2">
@@ -33,11 +48,10 @@ export default function UploadItem({ file }: { file: any }) {
         {state === "completed" && (
           <Button
             className="text-green-600 text-sm font-medium"
-            onClick={() =>
-              console.log("Save to DB", file)
-            }
+            onClick={handleFileUpload}
+            disabled = {isLoading}
           >
-            Save to DB
+            {isLoading? "Saving..": "Save to DB"}
           </Button>
         )}
       </div>

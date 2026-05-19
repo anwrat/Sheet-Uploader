@@ -5,6 +5,10 @@ import "./workers/workers.js";
 import config from './config/dotenv.config.js';
 import {tusServer} from './config/tus.config.js';
 
+app.all("/files", (req, res) => {
+  tusServer.handle(req, res);
+});
+
 app.all('/files*path',(req,res)=>{
     tusServer.handle(req,res);
 });

@@ -4,7 +4,8 @@ import { parseFile, getAllUploadJobs} from "../controllers/sheetUpload.controlle
 
 const router = Router();
 
-router.post('/upload', upload.single('excel_file'),parseFile);
+// router.post('/upload', upload.single('excel_file'),parseFile);
+router.post('/save-to-db',parseFile);
 router.get('/job/', getAllUploadJobs);
 
-export default router
+export default router;

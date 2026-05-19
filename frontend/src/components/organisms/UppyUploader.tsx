@@ -27,7 +27,7 @@ import Button from '../atoms/Button';
 import UploadItem from '../molecules/UploadItem';
 import {useUppyUploader} from '../../hooks/useUppyUploader';
 import {UppyContextProvider} from '@uppy/react';
-import {Dropzone, useUppyState} from '@uppy/react';
+import {Dropzone, useUppyState, useDropzone} from '@uppy/react';
 
 export default function UppyUploader(){
     const uppy = useUppyUploader();
