@@ -20,6 +20,8 @@ export const sequelize = new Sequelize({
 
 export async function initDB(){
     await sequelize.authenticate();
-    await sequelize.sync({force: true});
+    await sequelize.sync({
+        // force: true
+    });
     console.log('Database synced successfully');
 }

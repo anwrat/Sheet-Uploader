@@ -37,7 +37,7 @@ export default function UploadItem({ file }: { file: any }) {
       if(!polling) return;
       const interval = setInterval(() => {
         fetchJobs(null, false);
-        if(uploadForCurrentFile?.status === 'completed'){
+        if(uploadForCurrentFile?.status === 'completed' || uploadForCurrentFile?.status === 'failed'){
             //Fetch jobs one last time to get completed jobs if missed
             fetchJobs(null,false);
             console.log(uploads);
