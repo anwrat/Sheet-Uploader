@@ -1,5 +1,4 @@
 import UppyUploader from './components/organisms/UppyUploader';
-import UploadQueue from './components/organisms/UploadQueue';
 
 function App() {
   return (
@@ -10,7 +9,6 @@ function App() {
           Sheet Uploader
         </h1>
         <UppyUploader />
-        {/* <UploadQueue /> */}
       </div>
     </div>
   );
